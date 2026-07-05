@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>CS面談レポート 2026年7月</title>
+<style>
+  :root {
+    --snap-color: #2563eb;
+    --snap-bg: #dbeafe;
+    --pred-color: #d97706;
+    --pred-bg: #fef3c7;
+    --appl-color: #16a34a;
+    --appl-bg: #dcfce7;
+    --bad: #dc2626;
+    --bad-bg: #fee2e2;
+    --good: #16a34a;
+    --good-bg: #dcfce7;
+    --neutral: #6b7280;
+    --bg: #f9fafb;
+    --card: #ffffff;
+    --border: #e5e7eb;
+    --text: #111827;
+    --text2: #6b7280;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 20px 16px; }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  h2 { font-size: 16px; font-weight: 700; margin: 24px 0 12px; border-left: 4px solid var(--pred-color); padding-left: 10px; }
+  h3 { font-size: 14px; font-weight: 600; margin: 16px 0 8px; }
+  .subtitle { color: var(--text2); font-size: 13px; margin-bottom: 20px; }
+
+  /* Badges */
+  .b-snap { display: inline-block; background: var(--snap-bg); color: var(--snap-color); font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 4px; white-space: nowrap; }
+  .b-pred { display: inline-block; background: var(--pred-bg); color: var(--pred-color); font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 4px; white-space: nowrap; }
+  .b-appl { display: inline-block; background: var(--appl-bg); color: var(--appl-color); font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 4px; white-space: nowrap; }
+
+  /* Legend */
+  .legend { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 16px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+  /* Summary */
+  .summary-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; }
+  .summary-box ol { padding-left: 20px; }
+  .summary-box li { margin-bottom: 8px; font-size: 14px; }
+
+  /* Cards grid */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; }
+  .card-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+  .card-value { font-size: 26px; font-weight: 700; line-height: 1; }
+  .card-sub { font-size: 12px; margin-top: 4px; }
+  .diff-bad { color: var(--bad); font-weight: 600; }
+  .diff-good { color: var(--good); font-weight: 600; }
+  .diff-neutral { color: var(--neutral); }
+  .card-period { font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+  /* Alert */
+  .alert { border-radius: var(--radius); padding: 12px 14px; margin-bottom: 12px; font-size: 13px; }
+  .alert-bad { background: var(--bad-bg); border-left: 4px solid var(--bad); }
+  .alert-good { background: var(--good-bg); border-left: 4px solid var(--good); }
+  .alert-warn { background: var(--pred-bg); border-left: 4px solid var(--pred-color); }
+
+  /* Funnel bars */
+  .funnel { display: flex; flex-direction: column; gap: 8px; }
+  .funnel-row { display: flex; align-items: center; gap: 10px; }
+  .funnel-label { width: 80px; font-size: 12px; text-align: right; flex-shrink: 0; color: var(--text2); }
+  .funnel-bar-wrap { flex: 1; background: #f3f4f6; border-radius: 4px; height: 26px; position: relative; overflow: hidden; }
+  .funnel-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 12px; font-weight: 600; color: #fff; transition: width 0.5s; }
+  .funnel-val { width: 60px; font-size: 13px; font-weight: 600; text-align: right; flex-shrink: 0; }
+  .funnel-delta { width: 70px; font-size: 12px; text-align: right; flex-shrink: 0; }
+
+  /* Rate cards */
+  .rate-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .rate-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; }
+  .rate-card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .rate-card-name { font-size: 13px; font-weight: 600; }
+  .rate-main { font-size: 32px; font-weight: 800; margin: 4px 0; }
+  .rate-meta { font-size: 12px; color: var(--text2); }
+  .rate-bar { background: #f3f4f6; border-radius: 4px; height: 8px; margin-top: 8px; overflow: hidden; }
+  .rate-bar-fill { height: 100%; border-radius: 4px; }
+
+  /* Table */
+  .tbl-wrap { overflow-x: auto; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: #f3f4f6; padding: 8px 10px; text-align: left; white-space: nowrap; font-weight: 600; border-bottom: 1px solid var(--border); }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+  .tr-bad { background: #fff5f5; }
+  .tr-good { background: #f0fdf4; }
+  .tr-stop { background: #f9fafb; color: var(--text2); font-style: italic; }
+  .pill { display: inline-block; padding: 1px 7px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .pill-bad { background: var(--bad-bg); color: var(--bad); }
+  .pill-good { background: var(--good-bg); color: var(--good); }
+  .pill-warn { background: var(--pred-bg); color: var(--pred-color); }
+  .pill-stop { background: #f3f4f6; color: #9ca3af; }
+  .pill-new { background: #f0f9ff; color: #0284c7; }
+
+  /* Sections */
+  .section { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; }
+
+  /* Priority actions */
+  .actions { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .action-item { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; display: flex; gap: 12px; align-items: flex-start; }
+  .action-num { background: var(--pred-color); color: #fff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .action-num.p2 { background: #f59e0b; }
+  .action-num.p3 { background: #10b981; }
+  .action-num.p4 { background: #6b7280; }
+  .action-body { flex: 1; }
+  .action-title { font-weight: 700; font-size: 14px; }
+  .action-detail { font-size: 13px; color: var(--text2); margin-top: 4px; }
+  .action-measure { font-size: 12px; margin-top: 6px; }
+
+  /* Footer */
+  .footer { text-align: center; font-size: 12px; color: var(--text2); padding: 20px 0 10px; border-top: 1px solid var(--border); margin-top: 24px; }
+
+  /* Weekly panel */
+  .weekly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  @media (max-width: 600px) {
+    .weekly-grid { grid-template-columns: 1fr; }
+    .cards { grid-template-columns: repeat(2, 1fr); }
+    .rate-cards { grid-template-columns: 1fr; }
+  }
+
+  /* Stopped PJ note */
+  .note-box { background: #f9fafb; border: 1px dashed #d1d5db; border-radius: var(--radius); padding: 12px 14px; font-size: 13px; margin-bottom: 12px; color: var(--text2); }
+
+  /* Diagnosis */
+  .diag-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .diag-card { border-radius: var(--radius); padding: 12px; }
+  .diag-ok { background: var(--good-bg); border: 1px solid #86efac; }
+  .diag-ng { background: var(--bad-bg); border: 1px solid #fca5a5; }
+  .diag-warn { background: var(--pred-bg); border: 1px solid #fcd34d; }
+  .diag-title { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+  .diag-body { font-size: 12px; }
+
+  /* Rank table highlight */
+  .rank-1 { font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>CS面談 数値レポート</h1>
+  <div class="subtitle">データ基準日：2026-07-05（日）　締め日：2026-07-02　粒度：19プロジェクト　生成元：GAS snapshot/predCohort/applyCohort</div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <strong style="font-size:13px; align-self:center;">基準凡例</strong>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--snap-bg); border:2px solid var(--snap-color);"></div>
+      <span><span class="b-snap">【結果】</span> 各イベントを"起きた日"で計上。活動量・売上に使う。月境界でズレやすい。</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--pred-bg); border:2px solid var(--pred-color);"></div>
+      <span><span class="b-pred">【予定日】</span> 予約した人を予定日で追跡。実施率・キャンセル率・成約率の主基準。後で自己回復する。</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--appl-bg); border:2px solid var(--appl-color);"></div>
+      <span><span class="b-appl">【申込日】</span> 申込んだ人を申込日で追跡。集客・申込→予約の歩留まりに使う。</span>
+    </div>
+    <div class="legend-item" style="font-size:12px; color:var(--text2);">赤＝悪化　緑＝改善　前月比は6月(確定)vs5月(確定)</div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-box">
+    <h3>📋 3行サマリー（ポイントだけ読む人向け）</h3>
+    <ol>
+      <li><strong>「キャンセルが増えて実施が減った」</strong>：6月の実施率は67.6%で5月73.3%から<span class="diff-bad">−5.7pt</span>、キャンセル率は32.2%で<span class="diff-bad">+5.5pt</span>悪化。予約数(≈1215件)は横ばいなのに実施が80件減った。 <em>根拠：<span class="b-pred">【予定日】</span> 2026/6/1–6/30</em></li>
+      <li><strong>「成約率も落ちた」</strong>：面談した人が成約する率が28.6%→24.0%へ<span class="diff-bad">−4.6pt</span>低下。6月の成約数は197件で5月比<span class="diff-bad">−61件(−24%)</span>。 <em>根拠：<span class="b-pred">【予定日】</span> 2026/6/1–6/30</em></li>
+      <li><strong>「主犯はYou Voice Academy(YVA)とDigital Creators Academy(DCA)の2大PJ」</strong>：2つで全予約の44%を占めるのに、YVAのキャンセル率40%・DCAのキャンセル率45%は全体を大きく引き下げている。 <em>根拠：<span class="b-pred">【予定日】</span> 2026/6/1–6/30</em></li>
+    </ol>
+  </div>
+
+  <!-- SECTION1: 活動量ファネル（結果ベース）-->
+  <h2>① 活動量ファネル <span class="b-snap">【結果】</span></h2>
+  <div class="subtitle" style="margin-top:-8px; margin-bottom:12px;">対象期間：6月確定 2026/6/1–6/30 vs 5月確定 2026/5/1–5/31</div>
+
+  <div class="funnel" style="max-width:700px; margin-bottom:20px;">
+    <!-- 申込 -->
+    <div class="funnel-row">
+      <div class="funnel-label">申込 <span class="b-appl" style="font-size:10px;">申込日</span></div>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar" style="width:100%; background:var(--appl-color);">1,298件 (Jun)</div>
+      </div>
+      <div class="funnel-val">1,298</div>
+      <div class="funnel-delta"><span class="diff-good">+7件 +0.5%</span></div>
+    </div>
+    <!-- 予約 -->
+    <div class="funnel-row">
+      <div class="funnel-label">予約 <span class="b-snap" style="font-size:10px;">結果</span></div>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar" style="width:93.4%; background:var(--snap-color);">1,215件</div>
+      </div>
+      <div class="funnel-val">1,215</div>
+      <div class="funnel-delta"><span class="diff-bad">−16件 −1.3%</span></div>
+    </div>
+    <!-- 実施 -->
+    <div class="funnel-row">
+      <div class="funnel-label">実施 <span class="b-snap" style="font-size:10px;">結果</span></div>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar" style="width:63.0%; background:#7c3aed;">820件</div>
+      </div>
+      <div class="funnel-val">820</div>
+      <div class="funnel-delta"><span class="diff-bad">−85件 −9.4%</span></div>
+    </div>
+    <!-- 成約 -->
+    <div class="funnel-row">
+      <div class="funnel-label">成約 <span class="b-snap" style="font-size:10px;">結果</span></div>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar" style="width:18.0%; background:#db2777;">234件</div>
+      </div>
+      <div class="funnel-val">234</div>
+      <div class="funnel-delta"><span class="diff-bad">−20件 −7.9%</span></div>
+    </div>
+    <!-- キャンセル -->
+    <div class="funnel-row">
+      <div class="funnel-label">キャンセル <span class="b-snap" style="font-size:10px;">結果</span></div>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar" style="width:38.3%; background:var(--bad);">499件</div>
+      </div>
+      <div class="funnel-val">499</div>
+      <div class="funnel-delta"><span class="diff-bad">+66件 +15.2%</span></div>
+    </div>
+  </div>
+
+  <!-- SECTION2: 率の比較（予定日ベース）-->
+  <h2>② 率の比較 <span class="b-pred">【予定日】</span></h2>
+  <div class="subtitle" style="margin-top:-8px; margin-bottom:12px;">6月確定（2026/6/1–6/30）vs 5月確定（2026/5/1–5/31）　※率は混合基準禁止、分子・分母ともpredCohort</div>
+
+  <div class="rate-cards">
+    <!-- 実施率 -->
+    <div class="rate-card">
+      <div class="rate-card-top">
+        <div>
+          <div class="rate-card-name">実施率（面談完了率）</div>
+          <div style="font-size:11px; color:var(--text2);">completions ÷ bookings</div>
+        </div>
+        <span class="b-pred">【予定日】</span>
+      </div>
+      <div class="rate-main" style="color:var(--bad);">67.6%</div>
+      <div class="rate-meta">
+        5月 73.3%　→　6月 <strong>67.6%</strong>　<span class="diff-bad">−5.7pt ▼</span>
+      </div>
+      <div class="rate-bar"><div class="rate-bar-fill" style="width:67.6%; background:var(--bad);"></div></div>
+      <div class="card-period">根拠：<span class="b-pred">【予定日】</span> 2026/6/1–6/30</div>
+    </div>
+    <!-- キャンセル率 -->
+    <div class="rate-card">
+      <div class="rate-card-top">
+        <div>
+          <div class="rate-card-name">キャンセル率</div>
+          <div style="font-size:11px; color:var(--text2);">declines ÷ bookings</div>
+        </div>
+        <span class="b-pred">【予定日】</span>
+      </div>
+      <div class="rate-main" style="color:var(--bad);">32.2%</div>
+      <div class="rate-meta">
+        5月 26.8%　→　6月 <strong>32.2%</strong>　<span class="diff-bad">+5.4pt ▲ (悪化)</span>
+      </div>
+      <div class="rate-bar"><div class="rate-bar-fill" style="width:32.2%; background:var(--bad);"></div></div>
+      <div class="card-period">根拠：<span class="b-pred">【予定日】</span> 2026/6/1–6/30</div>
+    </div>
+    <!-- 成約率 -->
+    <div class="rate-card">
+      <div class="rate-card-top">
+        <div>
+          <div class="rate-card-name">成約率（クロージング率）</div>
+          <div style="font-size:11px; color:var(--text2);">deals ÷ completions</div>
+        </div>
+        <span class="b-pred">【予定日】</span>
+      </div>
+      <div class="rate-main" style="color:var(--bad);">24.0%</div>
+      <div class="rate-meta">
+        5月 28.6%　→　6月 <strong>24.0%</strong>　<span class="diff-bad">−4.6pt ▼</span>
+      </div>
+      <div class="rate-bar"><div class="rate-bar-fill" style="width:24.0%; background:var(--pred-color);"></div></div>
+      <div class="card-period">根拠：<span class="b-pred">【予定日】</span> 2026/6/1–6/30　※成約LT遅れあり・成熟分で見ることを推奨</div>
+    </div>
+  </div>
+
+  <!-- SECTION3: 週次 -->
+  <h2>③ 週次比較 <span class="b-pred">【予定日】</span></h2>
+  <div class="subtitle" style="margin-top:-8px; margin-bottom:12px;">先週 2026/6/28–7/4（完全週）vs 先々週 2026/6/21–6/27（完全週）</div>
+
+  <div class="weekly-grid">
+    <div class="section">
+      <div style="font-weight:700; margin-bottom:8px;">先週（6/28–7/4）</div>
+      <table>
+        <tr><td>予約</td><td><strong>297件</strong></td></tr>
+        <tr><td>実施</td><td><strong>201件</strong></td></tr>
+        <tr><td>成約</td><td><strong>59件</strong></td></tr>
+        <tr><td>キャンセル</td><td><strong>100件</strong></td></tr>
+        <tr><td>実施率 <span class="b-pred" style="font-size:10px;">予定日</span></td><td><strong>67.7%</strong></td></tr>
+        <tr><td>キャンセル率 <span class="b-pred" style="font-size:10px;">予定日</span></td><td><strong>31.6%</strong></td></tr>
+        <tr><td>成約率 <span class="b-pred" style="font-size:10px;">予定日</span></td><td><strong>20.4%</strong> <span class="diff-bad" style="font-size:11px;">※成約LT遅れ・暫定</span></td></tr>
+      </table>
+      <div style="font-size:11px; color:var(--text2); margin-top:6px;">根拠：<span class="b-pred">【予定日】</span> 2026/6/28–7/4</div>
+    </div>
+    <div class="section">
+      <div style="font-weight:700; margin-bottom:8px;">先々週（6/21–6/27）</div>
+      <table>
+        <tr><td>予約</td><td><strong>251件</strong></td></tr>
+        <tr><td>実施</td><td><strong>167件</strong></td></tr>
+        <tr><td>成約</td><td><strong>41件</strong></td></tr>
+        <tr><td>キャンセル</td><td><strong>100件</strong></td></tr>
+        <tr><td>実施率 <span class="b-pred" style="font-size:10px;">予定日</span></td><td><strong>66.5%</strong></td></tr>
+        <tr><td>キャンセル率 <span class="b-pred" style="font-size:10px;">予定日</span></td><td><strong>32.7%</strong></td></tr>
+        <tr><td>成約率 <span class="b-pred" style="font-size:10px;">予定日</span></td><td><strong>21.6%</strong> <span class="diff-bad" style="font-size:11px;">※成約LT遅れ・暫定</span></td></tr>
+      </table>
+      <div style="font-size:11px; color:var(--text2); margin-top:6px;">根拠：<span class="b-pred">【予定日】</span> 2026/6/21–6/27</div>
+    </div>
+  </div>
+  <div class="alert alert-warn" style="margin-top:-8px; margin-bottom:20px;">
+    週次は成約LT（成約確定までのタイムラグ）があるため成約率は低く出る傾向。先週→先々週の成約率差(20.4% vs 21.6%)は誤差範囲。実施率・キャンセル率は確定値として読める。
+  </div>
+
+  <!-- SECTION4: 停止・異常PJ切り分け -->
+  <h2>④ 停止・異常プロジェクト切り分け</h2>
+
+  <div class="note-box">
+    ⚠️ 以下2PJは5月に予約があったが6月に0件（完全停止）。全体平均には影響少なく、除いた稼働PJのみで見ても実施率67.6%・キャンセル率32.2%（全体と同水準）。
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>PJ名</th><th>5月予約 <span class="b-pred">予定日</span></th><th>6月予約 <span class="b-pred">予定日</span></th><th>状態</th><th>備考</th></tr></thead>
+      <tbody>
+        <tr class="tr-stop">
+          <td>Bizen Tattoo Institute</td><td>26件</td><td>0件</td><td><span class="pill pill-stop">停止</span></td><td>6月以降予約なし</td>
+        </tr>
+        <tr class="tr-stop">
+          <td>ロゴミライキャンプ</td><td>1件</td><td>0件</td><td><span class="pill pill-stop">停止</span></td><td>5月も1件のみ・元々小規模</td>
+        </tr>
+        <tr class="tr-bad">
+          <td>ショート動画ブートキャンプ</td><td>49件</td><td>22件</td><td><span class="pill pill-warn">集客減</span></td><td>−55%集客急減。成約率は32%→41%改善</td>
+        </tr>
+        <tr class="tr-bad">
+          <td>ライバーマネジメントスクール</td><td>106件</td><td>68件</td><td><span class="pill pill-warn">集客減</span></td><td>−36%。実施率も74%→62%悪化</td>
+        </tr>
+        <tr class="tr-bad">
+          <td>Coオンラインプロモーション</td><td>75件</td><td>40件</td><td><span class="pill pill-warn">集客減</span></td><td>−47%。ただし成約率22%→33%改善</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION5: MECE診断 -->
+  <h2>⑤ ファネル段別 現状診断（MECE）</h2>
+
+  <div class="diag-grid">
+    <div class="diag-card diag-ok">
+      <div class="diag-title">🟢 集客（申込）</div>
+      <div class="diag-body">
+        Jun 1,298件 vs May 1,291件 <strong>+0.5%</strong>。横ばい・安定。<br>
+        根拠：<span class="b-appl">【申込日】</span> 2026/6/1–6/30
+      </div>
+    </div>
+    <div class="diag-card diag-ok">
+      <div class="diag-title">🟢 申込→予約 転換</div>
+      <div class="diag-body">
+        Jun 90.3% vs May 91.1% <strong>−0.8pt</strong>。ほぼ横ばい・問題なし。<br>
+        根拠：<span class="b-appl">【申込日】</span> 2026/6/1–6/30
+      </div>
+    </div>
+    <div class="diag-card diag-ng">
+      <div class="diag-title">🔴 予約→実施（実施率）← 主要ボトルネック</div>
+      <div class="diag-body">
+        67.6% vs 73.3%、<strong>−5.7pt</strong>。予約は維持できているのに面談日に来ない人が急増。<br>
+        根拠：<span class="b-pred">【予定日】</span> 2026/6/1–6/30
+      </div>
+    </div>
+    <div class="diag-card diag-ng">
+      <div class="diag-title">🔴 実施→成約（成約率）← 二次ボトルネック</div>
+      <div class="diag-body">
+        24.0% vs 28.6%、<strong>−4.6pt</strong>。面談できた人へのクロージング力が低下。<br>
+        根拠：<span class="b-pred">【予定日】</span> 2026/6/1–6/30
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-bad">
+    <strong>損失の試算：</strong>もし6月も5月の実施率73.3%を維持できていれば、実施件数は821件→892件（+71件）。成約率28.6%を維持できていれば成約数は197件→255件（+58件）。合わせると実施率・成約率の二重の悪化で6月の成約は<strong>約−61件の機会損失</strong>。
+  </div>
+
+  <!-- SECTION6: プロジェクト別ランキング -->
+  <h2>⑥ プロジェクト別ランキング <span class="b-pred">【予定日】</span></h2>
+  <div class="subtitle" style="margin-top:-8px; margin-bottom:12px;">6月確定（2026/6/1–6/30）　停止PJ(Bizen/ロゴミライ)は除外</div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>プロジェクト</th>
+          <th>予約 <span class="b-pred">予定日</span></th>
+          <th>実施</th>
+          <th>成約</th>
+          <th>実施率 <span class="b-pred">予定日</span></th>
+          <th>キャンセル率 <span class="b-pred">予定日</span></th>
+          <th>成約率 <span class="b-pred">予定日</span></th>
+          <th>5月予約</th>
+          <th>状態</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="tr-bad">
+          <td><strong>You Voice Academy</strong></td>
+          <td class="rank-1">314</td>
+          <td>189</td>
+          <td>45</td>
+          <td><span class="diff-bad">60.2%</span></td>
+          <td><span class="diff-bad">39.5%</span></td>
+          <td>23.8%</td>
+          <td>316</td>
+          <td><span class="pill pill-bad">キャンセル多</span></td>
+        </tr>
+        <tr class="tr-bad">
+          <td><strong>Digital Creators Academy</strong></td>
+          <td>216</td>
+          <td>118</td>
+          <td>30</td>
+          <td><span class="diff-bad">54.6%</span></td>
+          <td><span class="diff-bad">44.9%</span></td>
+          <td>25.4%</td>
+          <td>166</td>
+          <td><span class="pill pill-bad">最低実施率</span></td>
+        </tr>
+        <tr>
+          <td>ARTISTORY LABS</td>
+          <td>231</td>
+          <td>172</td>
+          <td>41</td>
+          <td>74.5%</td>
+          <td>25.1%</td>
+          <td>23.8%</td>
+          <td>210</td>
+          <td><span class="pill pill-warn">成約率低め</span></td>
+        </tr>
+        <tr class="tr-bad">
+          <td><strong>ミニフランチャイズ本部構築P</strong></td>
+          <td>72</td>
+          <td>56</td>
+          <td>2</td>
+          <td>77.8%</td>
+          <td>22.2%</td>
+          <td><span class="diff-bad">3.6%</span></td>
+          <td>49</td>
+          <td><span class="pill pill-bad">成約率激減</span></td>
+        </tr>
+        <tr class="tr-bad">
+          <td>ライバーマネジメントスクール</td>
+          <td>68</td>
+          <td>42</td>
+          <td>8</td>
+          <td><span class="diff-bad">61.8%</span></td>
+          <td><span class="diff-bad">38.2%</span></td>
+          <td>19.0%</td>
+          <td>106</td>
+          <td><span class="pill pill-bad">集客・実施率悪化</span></td>
+        </tr>
+        <tr class="tr-good">
+          <td><strong>Graphic Artist Guild</strong></td>
+          <td>67</td>
+          <td>59</td>
+          <td>17</td>
+          <td><span class="diff-good">88.1%</span></td>
+          <td><span class="diff-good">11.9%</span></td>
+          <td>28.8%</td>
+          <td>68</td>
+          <td><span class="pill pill-good">最優秀実施率</span></td>
+        </tr>
+        <tr>
+          <td>Coオンラインプロモーション</td>
+          <td>40</td>
+          <td>33</td>
+          <td>11</td>
+          <td>82.5%</td>
+          <td>17.5%</td>
+          <td>33.3%</td>
+          <td>75</td>
+          <td><span class="pill pill-warn">集客減・率は良い</span></td>
+        </tr>
+        <tr class="tr-good">
+          <td><strong>ポケットアニメMC</strong></td>
+          <td>57</td>
+          <td>45</td>
+          <td>19</td>
+          <td>78.9%</td>
+          <td>21.1%</td>
+          <td><span class="diff-good">42.2%</span></td>
+          <td>65</td>
+          <td><span class="pill pill-good">高成約率</span></td>
+        </tr>
+        <tr class="tr-bad">
+          <td>Neo Snack Academy</td>
+          <td>40</td>
+          <td>29</td>
+          <td>4</td>
+          <td>72.5%</td>
+          <td>27.5%</td>
+          <td><span class="diff-bad">13.8%</span></td>
+          <td>4</td>
+          <td><span class="pill pill-new">急拡大</span><span class="pill pill-bad" style="margin-left:3px;">成約率低</span></td>
+        </tr>
+        <tr class="tr-good">
+          <td>メイクアップバストスクール</td>
+          <td>26</td>
+          <td>18</td>
+          <td>8</td>
+          <td>69.2%</td>
+          <td>30.8%</td>
+          <td><span class="diff-good">44.4%</span></td>
+          <td>37</td>
+          <td><span class="pill pill-good">最高成約率</span></td>
+        </tr>
+        <tr>
+          <td>ショート動画ブートキャンプ</td>
+          <td>22</td>
+          <td>17</td>
+          <td>7</td>
+          <td>77.3%</td>
+          <td>22.7%</td>
+          <td><span class="diff-good">41.2%</span></td>
+          <td>49</td>
+          <td><span class="pill pill-warn">集客減・成約率改善</span></td>
+        </tr>
+        <tr>
+          <td>ひとり広報アカデミー</td>
+          <td>17</td>
+          <td>14</td>
+          <td>3</td>
+          <td><span class="diff-good">82.4%</span></td>
+          <td>17.6%</td>
+          <td>21.4%</td>
+          <td>18</td>
+          <td><span class="pill pill-warn">成約率改善余地</span></td>
+        </tr>
+        <tr>
+          <td>ミニフランチャイズ（再掲省略）</td>
+          <td colspan="8" style="color:var(--text2); font-size:12px;">上記に記載</td>
+        </tr>
+        <tr>
+          <td>サイエンスセールスカレッジ</td>
+          <td>14</td>
+          <td>8</td>
+          <td>1</td>
+          <td><span class="diff-bad">57.1%</span></td>
+          <td>42.9%</td>
+          <td>12.5%</td>
+          <td>18</td>
+          <td><span class="pill pill-bad">小規模・率低</span></td>
+        </tr>
+        <tr>
+          <td>M.F.U</td>
+          <td>14</td>
+          <td>10</td>
+          <td>1</td>
+          <td>71.4%</td>
+          <td>28.6%</td>
+          <td>10.0%</td>
+          <td>16</td>
+          <td><span class="pill pill-warn">成約率低め</span></td>
+        </tr>
+        <tr class="tr-bad">
+          <td>Vintage Buyer College</td>
+          <td>8</td>
+          <td>4</td>
+          <td>0</td>
+          <td><span class="diff-bad">50.0%</span></td>
+          <td><span class="diff-bad">50.0%</span></td>
+          <td>0.0%</td>
+          <td>5</td>
+          <td><span class="pill pill-bad">最悪キャンセル率</span></td>
+        </tr>
+        <tr>
+          <td>ふるさとプロテュース実践塾</td>
+          <td>6</td>
+          <td>5</td>
+          <td>0</td>
+          <td><span class="diff-good">83.3%</span></td>
+          <td>16.7%</td>
+          <td>0.0%</td>
+          <td>0</td>
+          <td><span class="pill pill-new">新規立上げ</span></td>
+        </tr>
+        <tr>
+          <td>卵丸フランチャイズ</td>
+          <td>3</td>
+          <td>2</td>
+          <td>0</td>
+          <td>66.7%</td>
+          <td>33.3%</td>
+          <td>0.0%</td>
+          <td>2</td>
+          <td><span class="pill pill-warn">小規模</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION7: 対策案 -->
+  <h2>⑦ 優先対策案（穴の大きい順）</h2>
+
+  <div class="actions">
+    <div class="action-item">
+      <div class="action-num">1</div>
+      <div class="action-body">
+        <div class="action-title">🔴 You Voice Academy（YVA）のキャンセル率を下げる</div>
+        <div class="action-detail">予約314件・キャンセル率39.5%（124件がキャンセル）。全体の31%の予約を占める最大PJで、ここを改善するだけで全体指標が大きく動く。予約リマインド強化（前日・当日）・面談前の不安解消コンテンツ送付・担当者別キャンセル率の可視化と個別コーチングを検討。</div>
+        <div class="action-measure">効果測定：<span class="b-pred">【予定日】</span> YVAのキャンセル率が39.5%から35%以下に改善するか（週次でモニタリング）</div>
+      </div>
+    </div>
+    <div class="action-item">
+      <div class="action-num p2">2</div>
+      <div class="action-body">
+        <div class="action-title">🔴 Digital Creators Academy（DCA）の実施率・キャンセル率改善</div>
+        <div class="action-detail">予約216件（5月166件から+30%急拡大）・実施率54.6%・キャンセル率44.9%。急拡大に追いついていないCS品質が問題と推測。担当者増員・リマインドフロー整備・キャンセル理由のデータ収集が急務。</div>
+        <div class="action-measure">効果測定：<span class="b-pred">【予定日】</span> DCAの実施率が60%以上に戻るか</div>
+      </div>
+    </div>
+    <div class="action-item">
+      <div class="action-num p2">3</div>
+      <div class="action-body">
+        <div class="action-title">🟡 ミニフランチャイズ本部構築プログラムの成約率回復</div>
+        <div class="action-detail">予約72件（+47%増）なのに成約率3.6%（5月18%から激減）。実施率77.8%は悪くないのに成約できていない。5月と6月で何が変わったかを把握（担当者変更・商材変更・ターゲット変化）し、クロージング手法を見直す。</div>
+        <div class="action-measure">効果測定：<span class="b-pred">【予定日】</span> 成約率が10%以上に回復するか</div>
+      </div>
+    </div>
+    <div class="action-item">
+      <div class="action-num p3">4</div>
+      <div class="action-body">
+        <div class="action-title">🟡 ライバーマネジメントスクールの集客回復</div>
+        <div class="action-detail">予約106→68件（−36%）且つ実施率74%→62%。集客と質の両方が悪化。集客ルートと5月との差を確認する。</div>
+        <div class="action-measure">効果測定：<span class="b-appl">【申込日】</span> 7月申込数が6月以上に戻るか、<span class="b-pred">【予定日】</span> 実施率が70%以上に戻るか</div>
+      </div>
+    </div>
+    <div class="action-item">
+      <div class="action-num p3">5</div>
+      <div class="action-body">
+        <div class="action-title">🟢 Graphic Artist Guild・ポケットアニメMCをベストプラクティスとして水平展開</div>
+        <div class="action-detail">GAGは実施率88%・キャンセル率12%（全体トップ）。ポケットアニメは成約率42%（メイクアップ44%と並びトップ水準）。リマインド方法・面談設計・クロージングトークを他PJに展開する。</div>
+        <div class="action-measure">効果測定：<span class="b-pred">【予定日】</span> 全体実施率が70%以上・成約率が27%以上に改善するか（翌月）</div>
+      </div>
+    </div>
+    <div class="action-item">
+      <div class="action-num p4">6</div>
+      <div class="action-body">
+        <div class="action-title">⚪ Neo Snack Academy・ふるさとプロテュース実践塾のモニタリング継続</div>
+        <div class="action-detail">Neo Snackは4→40件の急拡大フェーズで成約率14%（5月50%から急落）。ふるさとプロテュースは新規立ち上げで成約0。どちらもまだコホートが成熟していないため、2ヶ月後の成熟コホートで再評価する。</div>
+        <div class="action-measure">効果測定：<span class="b-pred">【予定日】</span> 8月に成熟コホートの成約率を確認</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION8: 7月速報 -->
+  <h2>⑧ 7月速報（暫定・参考値）</h2>
+  <div class="alert alert-warn">
+    ⚠️ 以下は2026/7/1–7/2の2日間のみ（締め日：基準日-3日＝7/2）。絶対値は少ない。保留2件・成約LT遅れあり。率の解釈は慎重に。
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">予約 <span class="b-pred">【予定日】</span></div>
+      <div class="card-value" style="font-size:20px;">100件</div>
+      <div class="card-sub diff-neutral">2日間</div>
+      <div class="card-period">2026/7/1–7/2</div>
+    </div>
+    <div class="card">
+      <div class="card-label">実施率 <span class="b-pred">【予定日】</span></div>
+      <div class="card-value" style="font-size:20px; color:var(--pred-color);">71.0%</div>
+      <div class="card-sub diff-good">（暫定）6月67.6%から+3.4pt</div>
+      <div class="card-period">根拠：predCohort 2026/7/1–7/2</div>
+    </div>
+    <div class="card">
+      <div class="card-label">キャンセル率 <span class="b-pred">【予定日】</span></div>
+      <div class="card-value" style="font-size:20px; color:var(--pred-color);">27.0%</div>
+      <div class="card-sub diff-good">（暫定）6月32.2%から-5.2pt</div>
+      <div class="card-period">根拠：predCohort 2026/7/1–7/2</div>
+    </div>
+    <div class="card">
+      <div class="card-label">成約率 <span class="b-pred">【予定日】</span></div>
+      <div class="card-value" style="font-size:20px; color:var(--pred-color);">19.7%</div>
+      <div class="card-sub diff-bad">（暫定・成約LT遅れで低い）</div>
+      <div class="card-period">根拠：predCohort 2026/7/1–7/2　※成熟後に再確認</div>
+    </div>
+    <div class="card">
+      <div class="card-label">申込 <span class="b-appl">【申込日】</span></div>
+      <div class="card-value" style="font-size:20px;">207件</div>
+      <div class="card-sub diff-neutral">7月5日間計</div>
+      <div class="card-period">applyCohort 2026/7/1–7/5</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    集計元：GAS（スプシ「CS数値集計」）→ snapshot / predCohort / applyCohort<br>
+    データ基準日：2026-07-05　締め日（率の確定値用）：2026-07-02（基準日−3日）<br>
+    粒度：19プロジェクト（タブ25→PJ19に集約）　停止PJ：Bizen Tattoo Institute・ロゴミライキャンプ（各0件）<br>
+    保留（予定日到来未実施）：7月2件・6月3件・7月速報88件中34件保留（applyCohort申込7月分）<br>
+    成約LT：成約確定には実施から数日〜数週間のラグあり。直近の成約率は過小評価になるため成熟コホートで再確認を推奨
+  </div>
+
+</div>
+</body>
+</html>
